@@ -1,0 +1,1019 @@
+README pour les scripts
+Sarah Kaddah
+
+========================================================================
+==============================Semaine 1=================================
+========================================================================
+Lundi 15/01/2018 
+========================================================================
+-lecture thèse de Laurianne
+-préparation du plan de l'exposé
+-lecture des 2 premiers articles de Laurianne
+========================================================================
+Mardi 16/01/2018
+========================================================================
+-biblio + article Alexandrov
+-premières diapos de l'exposé
+========================================================================
+Mercredi 17/01/2018
+========================================================================
+-récupération de la thèse de Laurianne en PDF
+-connexion MADDY: ssh -X kaddah@rddmaddy.mnhn.fr ; mdp: alphasat ; exit
+(le -X permet d’ouvrir un autre terminal avec Maddy)
+-Répertoire fichiers fasta des AS:
+/usm503_suite/ponger/alphasat_folder_LAST/data_for_DB/*.noN.fst_149.161_182.fst 
+----> copie des fichiers:
+Copie des fichiers:
+scp /usm503_suite/ponger/alphasat_folder_LAST/data_for_DB/*.noN.fst_149.161_182.fst seq_alphasat/
+-Compter le nombre de fichiers: 35
+find seq_alphasat/*.noN.fst_149.161_182.fst | wc -l
+-Information sur les fichiers des séquences alphasat:
+	-noN: élminination des séq contenant des N ou d'autres caractères ambigus
+	-149: phase des répétitions
+	-161_182: filtre de longueur, seules les seq ayant une longueur comprise entre ces deux bornes sont conservées.
+-Compter le nombre de séquences AS:
+grep -c ">" Nomascus_leucogenys.fa.regions.fst_np_L30.monomers.noN.fst_149.161_182.fst|wc -l
+-Pour enlever le mode compacte de Google: ctrl + maj +f 
+========================================================================
+Jeudi 18/01/2018
+========================================================================
+-finalisation des diapos
+========================================================================
+Vendredi 19/01/2018
+========================================================================
+-Présentation à BFM
+
+========================================================================
+==============================Semaine 2=================================
+========================================================================
+Lundi 22/01/2018
+========================================================================
+-Imprimante: TOSHIBA-e-385S ou RDC_toshiba
+
+-CONSEIL: il faut lancer depuis le répertoire des données
+
+-Copie du script de Loic: classification.py renommé classification_loic.py
+scp /usm503_suite/ponger/alphasat_folder_LAST/data_for_DB/stage_m2-master/script/classification.py ..
+
+
+-Copie du script de Florence: classification.py renommé classification_florence.py
+localisation: stage/script/classification.py
+############################
+#Classification_florence.py#
+############################
+-programme de Florence
+-exemple de ligne de commande:
+python3 script_python.py ../data/nt011630.rev.monomers.fst_149.length_166_177.kmers5 -o res.txt --lda 110000 --pairmate 0.90 
+
+-Exemple de ligne de commande:
+python3 script_python.py ../data/nt011630.rev.monomers.fst_149.length_166_177.kmers5 -o res.txt --lda 110000 --pairmate 0.90
+-test: répertoire data
+python3 ../script/classification.py seq_AS_kmers5/Macaca_mulatta.fa.regions.fst_L30.monomers.noN.fst_149.161_182.fst.kmers5 -o ../results/test/resTest.txt --pairmate 0.80  --verbose --maxsizefamily 1000
+-aide:
+../script/classification.py --help
+
+-Copie des fichiers 5mers (avec des séquences humaines insérées parmi les séquences AS pour avoir 1024 axes pour l'ACP):
+scp /usm503_suite/ponger/alphasat_folder_LAST/data_for_DB/*.noN.fst_149.161_182.fst.kmers5 seq_AS_kmers5/
+-Compter le nombre de fichiers: 32
+find seq_AS_kmers5/*.noN.fst_149.161_182.fst.kmers5 | wc -l
+
+VIM: https://linux.developpez.com/formation_debian/vim.html
+
+-écriture de 2 README pour le fichier data et script
+
+-Lecture du rapport de Florence
+========================================================================
+Mardi 23/01/2018
+========================================================================
+-Trouver les programmes qui tournent:
+ps -ef |grep kaddah
+e : présente l'environnement à la suite de la ligne de commande exécutée
+f : affiche les arbres généalogiques des processus
+-Forcer l'arrêt du programme: kill -9 NUM
+
+-Création d'un petit fichier: head -n 200 fichier > x
+
+-Regarder le contenu d'un fichier: more FICHIER
+
+-Obtenir la colonne avec les familles du fichier resultat: 
+cut -f4 -d " " x.classifcation
+-Trier la colonne en faisant un comptage des familles:
+cut -f4 -d " " x.classifcation |sort |uniq -c
+
+-Voir la différence entre deux fichiers: diff fichier1 fichier2
+http://www.linux-france.org/article/memo/node12.html
+
+###################
+#classification.py# 
+###################
+-Paramètres du programme de Loic:
+---------------------------------
+[--sequence_minimal_length SEQUENCE_MINIMAL_LENGTH]
+[--sequence_maximal_length SEQUENCE_MAXIMAL_LENGTH]
+default none
+->taille des séquences
+
+[--kmer_length KMER_LENGTH]
+default none
+-> longeur des kmers 
+
+[--kmer_output_file KMER_OUTPUT_FILE]
+default {input_file}.kmers{kmer_length}
+-> fichier qui contient la fréquence des kmers
+
+[--kmer_relative_frequencies]
+default F
+
+[--kmer_minimal_frequency KMER_MINIMAL_FREQUENCY]
+default 0
+->le nombre de kmers minimal pour l'analyse
+
+[--pairmate_threshold PAIRMATE_THRESHOLD]
+default = 0.95
+
+[--nbcomppca NBCOMPPCA]
+default 1024
+
+[--classification_output_file CLASSIFICATION_OUTPUT_FILE] 
+Default filename {input_file}.classification
+-> fichier de sortie
+
+[--sort_by_sequence_name] 
+ne prend pas d'argument (default T)
+par ordre d'arrivée dans le fichier (dans la table de kmers)
+
+[--no_N_filtering] 
+ne prend pas d'argument (default T) 
+-> pas de filtrage
+
+[--sort_by_cluster_name] 
+ne prend pas d'argument (default T) 
+-> Range les séquences par cluster (plus rapide que le tri par séquence)
+
+[--verbose VERBOSE] 
+default 0 
+-> 1/2,3,4/5,6,7,8,9 => 3 catégories
+
+[--timing TIMING] 
+default 0 (ne donne pas le temps)
+sinon 1 affiche le temps total
+
+[--pca PCA] 
+default no 
+-> plotter la PCA
+
+[--lda_sample_size LDA_SAMPLE_SIZE] 
+default 75000 
+-> taille de l'échantillon pour la lda
+
+[--min_family_size MIN_FAMILY_SIZE] 
+c'est la fréquence de la taille du jeu de données
+default 0, sinon choix entre 0 et 1. (float)
+
+[--version] (une seule version)
+
+input_file : kmer ou fasta file
+
+TEST: 
+Répertoire data/seq_AS_kmers5/
+commande de base:
+../../script/classification.py --classification_output_file ../../results/test/test1.dat --pairmate_threshold 0.8
+
+R: différence entre require et library
+There's not much of one in everyday work.
+However, according to the documentation for both functions (accessed by putting a ? before the function name and hitting enter), require is used inside functions, as it outputs a warning and continues if the package is not found, whereas library will throw an error.
+========================================================================
+Mercredi 24/01/2018
+========================================================================
+-Choix des espèces + bibliographie
+
+Macaca_nemestrina      OUI
+Macaca_mulatta         OUI
+Macaca_fascicularis    OUI
+
+Pongo_abelii           NON orang-outan
+
+Papio_hamadryas        NON babouin
+Papio_anubis           NON babouin
+
+Pan_troglodytes        NON chimp
+Pan_paniscus           NON bonobo (chimpNain)
+
+Gorilla_gorilla        NON
+
+Mandrillus_leucophaeus NON cerco
+Chlorocebus_sabaeus    NON cerco
+Cercocebus_atys        NON cerco
+========================================================================
+Jeudi 25/01/2018
+========================================================================
+-Bibliographie sur le macaque
+
+-Singes de l’ancien & nouveau monde: 
+http://fracademic.com/dic.nsf/frwiki/1543281
+
+-Une enzyme de restriction est une protéine capable de couper un fragment d'ADN au niveau d'une séquence de nucléotides caractéristique appelée site de restriction. Chaque enzyme de restriction reconnaît ainsi un site spécifique. 
+========================================================================
+Vendredi 26/01/2018
+========================================================================
+-Moteurs de recherche d’articles: PUBMED, GOOGLE scholar
+
+========================================================================
+==============================Semaine 3=================================
+========================================================================
+Lundi 29/01/2018
+========================================================================
+-Choix de l’espèce: voir tableau récapitulatif (complété)
+-Etude de l'origine des séquences
+-Pour avoir l'identifiant expérimental:
+grep ">" Macaca_mulatta_SRA.fasta.regions_np_L30.monomers.noN.fst_149.161_182.fst | sed "s/.*_SRA_//g"| sed "s/\..*//g"| sort -u > files_macaca_nemestrina
+-Trier en enlevant les doublons: sort -u prov_cercocebus
+========================================================================
+Mardi 30/01/2018
+========================================================================
+-Doc. wc:
+wc -l <nom_du_fichier> # affiche le nombre de lignes
+wc -c <nom_du_fichier> # affiche le nombre de bytes
+wc -m <nom_du_fichier> # affiche le nombre de caractères
+wc -L <nom_du_fichier> # indique la longueur de la plus longue ligne
+wc -w <nom_du_fichier> # affiche le nombre de mots
+
+-Parenthèse: grep 'lcl|Macaca' macaca > macaca2
+Test sur Macaca Fascicularis (39 893 séquences)
+-> pas besoin de LDA 
+-Essai sur un fichier de 200, 1 000, 10 000 séquences puis totalité
+
+-Macaca Fascicularis:
+	Avec lda:
+../../script/classification.py Macaca_fascicularis_SRA.fasta.regions_np_L30.monomers.noN.fst_149.161_182.fst.kmers52 --classification_output_file ../../results/Macaca_Fascicularis/Macaca_Fascicularis_52kmers_pm095_lda20000.dat --verbose 9 --pairmate_threshold 0.95 --timing 1 --lda_sample_size 20000
+7464.073758 s (124mni -> 2h)
+	sans lda:
+../../script/classification.py Macaca_fascicularis_SRA.fasta.regions_np_L30.monomers.noN.fst_149.161_182.fst.kmers52 --classification_output_file ../../results/Macaca_Fascicularis/Macaca_Fascicularis_52kmers_pm095.dat --verbose 9 --pairmate_threshold 0.95 --timing 1
+	avec lda et nb famille
+../../script/classification.py Macaca_fascicularis_SRA.fasta.regions_np_L30.monomers.noN.fst_149.161_182.fst.kmers52 --classification_output_file ../../results/Macaca_Fascicularis/Macaca_Fascicularis_52kmers_pm070_lda20000_minfamsize08.dat --verbose 9 --pairmate_threshold 0.70 --timing 1 --lda_sample_size 20000 --min_family_size 0.8
+9743.921706 s
+-C.sa
+../../script/classification.py Chlorocebus_sabaeus.fa.regions.fst_np_L30.monomers.noN.fst_149.161_182.fst.kmers52 --classification_output_file ../../results/Chlorocebus_Sabaeus/Chlorocebus_Sabaeus_52kmers_pm095_lda20000.dat --verbose 9 --pairmate_threshold 0.95 --timing 1 --lda_sample_size 20000
+Time full: 4160.284922 s
+
+test.sh = script pour faire tourner plusieurs commandes sur un fichier
+de 500 séquences
+test2.sh = script pour faire tourner quelques commandes sur le fichier
+entier de macaque.
+=> Ces deux scripts ont servi a créer le script Run.sh et sont supprimés
+
+########
+#run.sh#
+########
+Script qui automatise la ligne de commandes. Il suffit de choisir le paramètres.
+Les paramètres sont expliqués à l'intérieur du script.
+
+========================================================================
+Mercredi 31/01/2018
+========================================================================
+-Réception des données Pogonias et Solatus
+
+-Extraire les données: 
+gzip -d Cercopithecus_pogonias_XmnI.fst.gz
+gzip -d Cercopithecus_solatus_XmnI.fst.gz
+-> ce sont des fichiers fastas et je veux des fichiers en kmers
+-Déplacer les données dans /seq_AS_fasta: mv Cercopithecus_pogonias_XmnI.fst Cercopithecus_solatus_XmnI.fst seq_AS_fasta
+Problème d’autorisation de lecture du fichier réglé
+
+-Compter le nombre de séquences
+grep -c ">" Cercopithecus_solatus_XmnI.fst    105529
+grep -c ">" Cercopithecus_pogonias_XmnI.fst     112902
+
+-Copier le script qui permet de donner 5kmers dans script: 
+cp /home/ponger/extract_cenpb_pjalpha_position5/get_kmers_occurences_memory_optimization_freq.py script/
+
+##################################################
+#get_kmers_occurences_memory_optimization_freq.py# 
+##################################################
+-script de Loic
+-permet d'obtenir les fichiers avec les kmers
+
+-s "seq_file", required=True, help='input fasta file'
+-o "output_file", required=True, help='output tabulated file'
+-k "k",   type=int, default=2, help='length of the words'
+-f "freq",   action='store_true', default=False, help='to print word 
+frequencies instead of word counts (default: false)'
+-p "print_freq", action='store_true', default=False, 
+help='to print frequencies of word appareance among all sequences (default: false)')
+-v dest="verbose",   type=int, default=1, help='to be verbose (default: 1)')
+-F dest="minimal_freq",   type=float, default=0.0, help='the minimal frequency 
+to select words for output. If set to 0.1, for example, only words observed in at 
+
+-Obtenir les 5kmers à partir d'un fichier fasta:
+>Test avec classification.py
+../../script/classification.py Cercopithecus_pogonias_XmnI.fst --kmer_length 5 --kmer_output_file ../seq_AS_kmers52/Cercopithecus_pogonias_XmnI.fst.kmers52
+ça marche pas :( 
+>Test avec get_kmers_occurences_memory_optimization_freq.py
+../../script/get_kmers_occurences_memory_optimization_freq.py -s Cercopithecus_pogonias_XmnI.fst -o ../seq_AS_kmers52/Cercopithecus_pogonias_XmnI.fst.kmers52 -k 5 -v 9
+../../script/get_kmers_occurences_memory_optimization_freq.py -s Cercopithecus_solatus_XmnI.fst -o ../seq_AS_kmers52/Cercopithecus_solatus_XmnI.fst.kmers52 -k 5 -v 9
+OK!! :D
+
+-Création des fichiers 5kmers: 
+(solatus a été repris à cause des “doublons” di_l <dimere_left> et <di_r dimere_right>)
+	*Solatus:
+../../script/get_kmers_occurences_memory_optimization_freq.py -s Cercopithecus_solatus_XmnI.fst -o ../seq_AS_kmers52/Cercopithecus_solatus_XmnI.fst.kmers52 -k 5 -v 9
+	*Pogonias:
+../../script/get_kmers_occurences_memory_optimization_freq.py -s Cercopithecus_pogonias_XmnI.fst -o ../seq_AS_kmers52/Cercopithecus_pogonias_XmnI.fst.kmers52 -k 5 -v 9
+
+-Vérification sur R du nombre de 5kmers: Il devrait y en avoir 1024
+Pogonias: OK ; Solatus: OK 
+count_pogonias = read.table("count_pogonias.txt")
+count_solatus = read.table("../Cercopithecus_Solatus/count_solatus.txt")
+dim(count_pogonias) # [1]    1 1025
+dim(count_solatus)  # [1]    1 1025
+(j'ai supprimé les fichiers count_* qui contenait l'entête 
+des fichiers Cercop*kmers52)
+
+-Mémo R: 
+http://www.aliquote.org/cours/2012_biomed/AideMemoireR.html
+
+-Mise à jour des README
+
+# Lancer les calculs sans LDA (LDA>nbSeq), PM=0.95
+Voir scrip run.sh avec les arguments:
+	# 1-Nom de l'input
+	# 2-Nom de l'output - genre_espèce_kmers_pm_lda_fs
+	# 3-Valeur de la LDA
+	# 4-Family size: taille maxi des familles: 100 (calculer)
+
+Family size = 100 donc CALCUL du pourcentage par espèce:
+
+-Cercopithecus Solatus: 
+Calcul family size: 100 * 100 / 105 529 = 0.095% = 0.00095
+../../script/run.sh Cercopithecus_solatus_XmnI.fst.kmers52 Cercopithecus_Solatus/Cercopithecus_solatus_5kmers_pm095_lda120000_fs00095.dat 120000 0.00095
+
+-Cercopithecus Pogonias:
+Calcul family size:  100 * 100 / 112 902 = 0,089% = 0.00089
+../../script/run.sh Cercopithecus_pogonias_XmnI.fst.kmers52 Cercopithecus_Pogonias/Cercopithecus_Pogonias 120000 0.00089
+
+-Macaca Fascicularis SRA:
+Calcul family size:  100 * 100 / 39893 = 0.255% = 0.0025
+../../script/run.sh Macaca_fascicularis_SRA.fasta.regions_np_L30.monomers.noN.fst_149.161_182.fst.kmers52 Macaca_Fascicularis/Macaca_Fascicularis_SRA 50000 0.0034
+
+-Macaca Fascicularis Assembly:
+Calcul family size: 100*100/195 642 = 0.051 = 0.00051
+
+-Chlorocebus Sabaeus:
+Calcul family size:  100 * 100 / 29842 = 0.34% = 0,0034
+../../script/run.sh Chlorocebus_sabaeus.fa.regions.fst_np_L30.monomers.noN.fst_149.161_182.fst.kmers52 Chlorocebus_Sabaeus/Chlorocebus_Sabaeus 40000 0.0025
+========================================================================
+Jeudi 01/02/2018
+========================================================================
+############	################
+#comptage.R# -> #count_family.R#
+############	################
+Répertoire: results/espece/
+Pour lancer le script:
+Rscript --vanilla ../../Scripts/comptage.R fichier_res.dat > out.txt
+-compte le nombre de familles
+-compte le nombre de familles <100
+-compte le nombre de séquences dans ces petites familles
+-barplot nbfamilles en fonction des clusters
+========================================================================
+Vendredi 02/02/2018
+========================================================================
+	-	
+========================================================================
+==============================Semaine 4=================================
+========================================================================
+Lundi 05/02/2018
+========================================================================
+-120 000 en LDA ne fonctionne pas pour C.Pogonias (112 902 séquences)
+Essai avec une LDA = 110000:
+../../script/run.sh Cercopithecus_pogonias_XmnI.fst.kmers52 Cercopithecus_Pogonias 110000 0.00089
+
+#########################
+#get_motifs_by_family.py#
+#########################
+-programme de Loic 
+-permet d'identifier les motifs CENP-B et pJalpha
+-s le fichier à parser
+-f le fichier de classification
+-o le fichier output
+-p le pattern
+-v verbose
+
+-Récupérer les scripts pour étudier les motifs CENP-P et pJalpha:
+$scp /usm503_suite/ponger/alphasat_folder_LAST/data_for_DB/get_similarity_by_family.py script/
+$scp /usm503_suite/ponger/alphasat_folder_LAST/data_for_DB/build_consensus_by_family.py script/
+$scp /usm503_suite/ponger/alphasat_folder_LAST/data_for_DB/get_motifs_by_family.py script/
+
+-Run.sh => correction du chemin du résultat
+120 000 en LDA ne fonctionne pas pour C.Pogonias (112 902 séquences)
+Donc cette fois on essaie avec une LDA = 110 000, qui est la valeur référence chez Florence
+et qui représente à peu près 90% du jeu de données.
+Si ça ne marche pas, prendre  LDA = 100 000.
+../../script/run.sh Cercopithecus_pogonias_XmnI.fst.kmers52 Cercopithecus_Pogonias 110000 0.00089../../script/run.sh Cercopithecus_pogonias_XmnI.fst.kmers52 Cercopithecus_Pogonias 110000 0.00089
+
+-Latex: les bases voir test.tex
+-> vérifier que c’est en UTF-8
+-> sélectionner le type de modèle: article ou beamer
+-> ne pas oublier de cocher graphics
+Début de la présentation du 19 février
+
+-Recherche des motifs CENP-B et pJalpha (Rosandi¢ et al., 2006)
+CENP-B: TTCGTTGGAARCGGGA
+pJalpha: TTCCTTTTYCACCRTAG
+
+========================================================================
+Mardi 06/02/2018
+========================================================================
+-Copie des fichiers fasta, kmer52 et README de data sur ma machine pour travailler au cas ou Maddy rame
+
+-Travail sur les diapos
+========================================================================
+Mercredi 07/02/2018
+========================================================================
+-Finir les sites de fixation: gedit get_motifs_by_family.py
+->prend en entrée 
+-s le fichier à parser
+-f le fichier de classification
+-o le fichier output
+-p le pattern
+-v verbose
+
+-Faire fonctionner le github
+git clone https://github.com/sarahkaddah/stage
+mv articles/ stage/
+cd stage/
+git add articles/*
+git status
+git commit -m "mise à jour articles"
+git push
+sarahkaddah
+M77C0C0chanel
+
+-Lecture de l’article 2 de Laurianne
+========================================================================
+Jeudi 08/02/2018
+========================================================================
+-programme des motifs: motif.R
+
+Etude du motif pJalpha:
+
+M. Fascicularis: 
+[1] "Pourcentage de séquences dans chaque famille ayant le motif"
+[1] "Proportion de familles ayant le motif:"
+[2] "0.47"                                  
+[1] "Nombre de familles 100%:" "13"                      
+[3] "0.1"                     
+[1] "Nombre de familles > 0.5%:" "22"                        
+[3] "0.17"                      
+[1] "Nombre de familles < 0.5%:" "27"                        
+[3] "0.2"                       
+[1] "Nombre de familles 0%:" "70"                     "0.53"  
+
+C. Sabaeus:
+[1] "Pourcentage de séquences dans chaque famille ayant le motif"
+[1] "Proportion de familles ayant le motif:"
+[2] "0.67"                                  
+[1] "Nombre de familles 100%:" "3"                       
+[3] "0.03"                    
+[1] "Nombre de familles > 0.5%:" "27"                        
+[3] "0.27"                      
+[1] "Nombre de familles < 0.5%:" "37"                        
+[3] "0.37"                      
+[1] "Nombre de familles 0%:" "33"                     "0.33"
+
+Etude du motif CENP-B:
+
+M. Fascicularis: 
+[1] "Pourcentage de séquences dans chaque famille ayant le motif"
+[1] "Proportion de familles ayant le motif:"
+[2] "0.02"                                  
+[1] "Nombre de familles 100%:" "0"                       
+[3] "0"                       
+[1] "Nombre de familles > 0.5%:" "0"                         
+[3] "0"                         
+[1] "Nombre de familles < 0.5%:" "3"                         
+[3] "0.02"                      
+[1] "Nombre de familles 0%:" "129"                    "0.98" 
+
+C. Sabaeus:
+[1] "Pourcentage de séquences dans chaque famille ayant le motif"
+[1] "Proportion de familles ayant le motif:"
+[2] "0.02"                                  
+[1] "Nombre de familles 100%:" "0"                       
+[3] "0"                       
+[1] "Nombre de familles > 0.5%:" "0"                         
+[3] "0"                         
+[1] "Nombre de familles < 0.5%:" "2"                         
+[3] "0.02"                      
+[1] "Nombre de familles 0%:" "98"                     "0.98"     
+========================================================================
+Vendredi 09/02/2018
+========================================================================
+	-
+========================================================================
+==============================Semaine 5=================================
+========================================================================
+Lundi 12/02/2018
+========================================================================
+-Lancement pour le Pogonias avec une lda = 75 000:
+../../script/classification.py Cercopithecus_pogonias_XmnI.fst.kmers52 --classification_output_file ../../results/Cercopithecus_Pogonias/Cercopithecus_pogonias_XmnI.fst.kmers52.pm095_lda75000_fs000089.dat --verbose 9 --pairmate_threshold 0.95 --timing 1 --lda_sample_size 75000 --min_family_size 0.00089 &> ../../results/Cercopithecus_Pogonias/out_pm095_lda75000_fs000089.log &
+
+-Pour voir les travaux qui tournent:
+ps aux |  grep kaddah OU htop
+
+-Test get similarity by family
+-je regarde la divergence entre familles
+
+#############################
+#get_similarity_by_family.py#
+#############################
+-s fichier de séquences au format fasta
+-f fichier avec les familles (fichier de classification)   
+-o fichier de sortie
+-n nombre maximal de séquences utilisés pour l'analyse (default 0)
+-m nombre minimal de séquences dans une famille (default 2)
+-d distance
+--intra_only Type de distances
+-v verbose
+
+Paramètres choisis: -n 500 -m 100 -d 0
+Répertoire: seq_AS_fasta            
+TEST ChS:
+../../script/get_similarity_by_family.py -s Chlorocebus_sabaeus.fa.regions.fst_np_L30.monomers.noN.fst_149.161_182.fst -f ../../results/Chlorocebus_Sabaeus/Chlorocebus_Sabaeus_5kmers_pm095_lda40000_fs0.0025.dat -o ../../results/Chlorocebus_Sabaeus/Chlorocebus_Sabaeus_5kmers_pm095_lda40000_fs0.0025.n500_m100_d0_intra.similarity -n 500 -m 100 -d 0 --intra_only -v 9 &> ../../results/Chlorocebus_Sabaeus/outsimilarity_pm095_lda75000_fs000089_n500_m100_d0_intra.log &
+TEST MF:
+../../script/get_similarity_by_family.py -s Macaca_fascicularis_SRA.fasta.regions_np_L30.monomers.noN.fst_149.161_182.fst -f ../../results/Macaca_Fascicularis/Macaca_Fascicularis_SRA_5kmers_pm095_lda50000_fs0.0034.dat -o ../../results/Macaca_Fascicularis/Macaca_Fascicularis_SRA_5kmers_pm095_lda50000_fs0.0034.n500_m100_d0_intra.similarity -n 500 -m 100 -d 0 --intra_only -v 9 &> ../../results/Macaca_Fascicularis/outsimilarity__pm095_lda50000_fs00034_n500_m100_d0_intra.log &
+========================================================================
+Mardi 13/02/2018
+========================================================================
+Similarité par famille test avec 1000 + refaire avec 500 en intra pour les deux 
+   
+>TEST MF et ChS pour 500 (2e fois pour voir si on obtient la même chose): 
+../../script/get_similarity_by_family.py -s Chlorocebus_sabaeus.fa.regions.fst_np_L30.monomers.noN.fst_149.161_182.fst -f ../../results/Chlorocebus_Sabaeus/Chlorocebus_Sabaeus_5kmers_pm095_lda40000_fs0.0025.dat -o ../../results/Chlorocebus_Sabaeus/Chlorocebus_Sabaeus_5kmers_pm095_lda40000_fs0.0025.n500_m100_d0_intra_BIS.similarity -n 500 -m 100 -d 0 --intra_only -v 9 &> ../../results/Chlorocebus_Sabaeus/out/outsimilarity_pm095_lda75000_fs000089_n500_m100_d0_intra_BIS.log &	23233
+../../script/get_similarity_by_family.py -s Macaca_fascicularis_SRA.fasta.regions_np_L30.monomers.noN.fst_149.161_182.fst -f ../../results/Macaca_Fascicularis/Macaca_Fascicularis_SRA_5kmers_pm095_lda50000_fs0.0034.dat -o ../../results/Macaca_Fascicularis/Macaca_Fascicularis_SRA_5kmers_pm095_lda50000_fs0.0034.n500_m100_d0_intra_BIS.similarity -n 500 -m 100 -d 0 --intra_only -v 9 &> ../../results/Macaca_Fascicularis/out/outsimilarity__pm095_lda50000_fs00034_n500_m100_d0_intra_BIS.log &	23260
+
+>TEST MF et ChS pour 1000: 
+../../script/get_similarity_by_family.py -s Chlorocebus_sabaeus.fa.regions.fst_np_L30.monomers.noN.fst_149.161_182.fst -f ../../results/Chlorocebus_Sabaeus/Chlorocebus_Sabaeus_5kmers_pm095_lda40000_fs0.0025.dat -o ../../results/Chlorocebus_Sabaeus/Chlorocebus_Sabaeus_5kmers_pm095_lda40000_fs0.0025.n1000_m100_d0_intra.similarity -n 1000 -m 100 -d 0 --intra_only -v 9 &> ../../results/Chlorocebus_Sabaeus/out/outsimilarity_pm095_lda75000_fs000089_n1000_m100_d0_intra.log & 	23477
+../../script/get_similarity_by_family.py -s Macaca_fascicularis_SRA.fasta.regions_np_L30.monomers.noN.fst_149.161_182.fst -f ../../results/Macaca_Fascicularis/Macaca_Fascicularis_SRA_5kmers_pm095_lda50000_fs0.0034.dat -o ../../results/Macaca_Fascicularis/Macaca_Fascicularis_SRA_5kmers_pm095_lda50000_fs0.0034.n1000_m100_d0_intra.similarity -n 1000 -m 100 -d 0 --intra_only -v 9 &> ../../results/Macaca_Fascicularis/out/outsimilarity__pm095_lda50000_fs00034_n1000_m100_d0_intra.log &		 23508
+
+Commandes R
+Répertoire: results/Macaca_Fascicularis/
+dt = read.table("Macaca_Fascicularis_SRA_5kmers_pm095_lda50000_fs0.0034.n500_m100_d0_intra.similarity", header = T)
+svg("img/similarity_n500_m100_d0_intra.svg")
+plot(x = dtOrd[,"total_nb_seq"], y = dtOrd[,"mean"], main="Similarité intra-séquence", xlab="Taille des familles", ylab="Distance moyenne")
+dev.off()
+
+-Vérification:
+	-Pogonias -> FAIL
+	-similarité entre séq intra: OK MF & ChS
+
+-Lancer similarité:
+	-pour MF et ChS sans intra
+	-pour 1000
+
+Similarités dans la famille:
+Le résultat de la similarité est un tableau qui a pour entête: la famille, le nombre total de séquences, le nombre de distances, la médiane, la moyenne et l'écart-type.Les distances qui sont trop petites sont marquées NA. 
+
+On regarde la similarité intra-famille. Pour voir les similarités il faut regarder les valeurs moyennes de la distance. Plus elles sont petites, plus les familles sont similaires avec elles-mêmes. Remarque, la moyenne des distances est liée à l’âge des familles.
+
+Est-ce qu'il y a un lien entre tailles des familles et similarités ?
+Est-ce que les familles des différentes espèces ont les mêmes similarités ?
+
+Pour tester l'effet nb de seq sur la qualité de l'analyse tu peux le faire en intra ce sera plus simple à regarder et plus rapide aussi.
+
+-J’ai relancé 500 intra de similarité pour vérifier que 500 est une bonne valeur.
+-J’ai relance 1000 intra de similarité pour voir la différence avec 500.
+ -Lancement du cercopithèque avec d’autres paramètres pour voir si ça marche: 
+../../script/classification.py Cercopithecus_pogonias_XmnI.fst.kmers52 --classification_output_file ../../results/Cercopithecus_Pogonias/Cercopithecus_pogonias_XmnI.fst.kmers52.pm095_lda75000_fs000089.dat --verbose 9 --pairmate_threshold 0.85 --timing 1 --lda_sample_size 75000 --min_family_size 0.01 &> ../../results/Cercopithecus_Pogonias/out_pm095_lda75000_fs000089.log &
+
+========================================================================
+Mercredi 14/02/2018
+========================================================================
+##############################
+#build_consensus_by_family.py#
+##############################
+-programme de loic
+-séquences consensus
+-repertory: data/Seq_fasa
+-s fichier fasta
+-f fichier classification
+-m maximum de séquences alignées (500)
+-o output
+-v verbose
+
+c
+ChS
+../../script/multiple.sh Chlorocebus_sabaeus.fa.regions.fst_np_L30.monomers.noN.fst_149.161_182.fst ../../results/Chlorocebus_Sabaeus/Chlorocebus_Sabaeus_5kmers_pm095_lda40000_fs0.0025.dat ../../results/Chlorocebus_Sabaeus Chlorocebus_Sabaeus_5kmers_pm095_lda40000_fs0.0025 > ../../results/Chlorocebus_Sabaeus/out/err.log
+MF
+../../script/multiple.sh Macaca_fascicularis_SRA.fasta.regions_np_L30.monomers.noN.fst_149.161_182.fst ../../results/Macaca_Fascicularis/Macaca_Fascicularis_SRA_5kmers_pm095_lda50000_fs0.0034.dat ../../results/Macaca_Fascicularis Macaca_Fascicularis_SRA_5kmers_pm095_lda50000_fs0.0034 > ../../results/Macaca_Fascicularis/out/err.log
+
+Test pour consensus
+ ../../script/build_consensus_by_family.py -s Macaca_fascicularis_SRA.fasta.regions_np_L30.monomers.noN.fst_149.161_182.fst -f ../../results/Macaca_Fascicularis/Macaca_Fascicularis_SRA_5kmers_pm095_lda50000_fs0.0034.dat -m 500 -o ../results/Macaca_Fascicularis/Macaca_fascicularis_SRA_pm095_lda50000_fs0.0034_m500.consensus -v 9
+
+##################################
+#multiple_consensus_similarity.sh#
+##################################
+Script qui permet de tester plusieurs fois le consensus et la similarité pour n=500.
+Répertoire: data/seq_AS_fasta/
+MF
+../../script/multiple.sh Macaca_fascicularis_SRA.fasta.regions_np_L30.monomers.noN.fst_149.161_182.fst ../../results/Macaca_Fascicularis/Macaca_Fascicularis_SRA_5kmers_pm095_lda50000_fs0.0034.dat ../../results/Macaca_Fascicularis Macaca_Fascicularis_SRA_5kmers_pm095_lda50000_fs0.0034
+ChS
+ ../../script/multiple.sh Chlorocebus_sabaeus.fa.regions.fst_np_L30.monomers.noN.fst_149.161_182.fst ../../results/Chlorocebus_Sabaeus/Chlorocebus_Sabaeus_5kmers_pm095_lda40000_fs0.0025.dat ../../results/Chlorocebus_Sabaeus Chlorocebus_Sabaeus_5kmers_pm095_lda40000_fs0.0025
+
+
+Copie des fichiers similarity MF et ChS sur ma machine
+Analyse des résultats pour MF avec R -> se mettre dans le répertoire MF
+dt1 = read.table("Macaca_Fascicularis_SRA_5kmers_pm095_lda50000_fs0.0034_1.similarity", header = T)
+dt2 = read.table("Macaca_Fascicularis_SRA_5kmers_pm095_lda50000_fs0.0034_2.similarity", header = T)
+dt3 = read.table("Macaca_Fascicularis_SRA_5kmers_pm095_lda50000_fs0.0034_3.similarity", header = T)
+dt4 = read.table("Macaca_Fascicularis_SRA_5kmers_pm095_lda50000_fs0.0034_4.similarity", header = T)
+dt5 = read.table("Macaca_Fascicularis_SRA_5kmers_pm095_lda50000_fs0.0034_5.similarity", header = T)
+dt6 = read.table("Macaca_Fascicularis_SRA_5kmers_pm095_lda50000_fs0.0034_6.similarity", header = T)
+dt7 = read.table("Macaca_Fascicularis_SRA_5kmers_pm095_lda50000_fs0.0034_7.similarity", header = T)
+dt8 = read.table("Macaca_Fascicularis_SRA_5kmers_pm095_lda50000_fs0.0034_8.similarity", header = T)
+dt9 = read.table("Macaca_Fascicularis_SRA_5kmers_pm095_lda50000_fs0.0034_9.similarity", header = T)
+dt10 = read.table("Macaca_Fascicularis_SRA_5kmers_pm095_lda50000_fs0.0034_10.similarity", header = T)
+dt11 = read.table("Macaca_Fascicularis_SRA_5kmers_pm095_lda50000_fs0.0034.n500_m100_d0_intra.similarity", header = T)
+dt12 = read.table("Macaca_Fascicularis_SRA_5kmers_pm095_lda50000_fs0.0034.n500_m100_d0_intra_BIS.similarity", header = T)
+dt1000 = read.table("Macaca_Fascicularis_SRA_5kmers_pm095_lda50000_fs0.0034.n1000_m100_d0_intra.similarity", header = T)
+
+dt1 = read.table("Chlorocebus_Sabaeus_5kmers_pm095_lda40000_fs0.0025_1.similarity", header = T)
+dt2 = read.table("Chlorocebus_Sabaeus_5kmers_pm095_lda40000_fs0.0025_2.similarity", header = T)
+dt3 = read.table("Chlorocebus_Sabaeus_5kmers_pm095_lda40000_fs0.0025_3.similarity", header = T)
+dt4 = read.table("Chlorocebus_Sabaeus_5kmers_pm095_lda40000_fs0.0025_4.similarity", header = T)
+dt5 = read.table("Chlorocebus_Sabaeus_5kmers_pm095_lda40000_fs0.0025_5.similarity", header = T)
+dt6 = read.table("Chlorocebus_Sabaeus_5kmers_pm095_lda40000_fs0.0025_6.similarity", header = T)
+dt7 = read.table("Chlorocebus_Sabaeus_5kmers_pm095_lda40000_fs0.0025_7.similarity", header = T)
+dt8 = read.table("Chlorocebus_Sabaeus_5kmers_pm095_lda40000_fs0.0025_8.similarity", header = T)
+dt9 = read.table("Chlorocebus_Sabaeus_5kmers_pm095_lda40000_fs0.0025_9.similarity", header = T)
+dt10 = read.table("Chlorocebus_Sabaeus_5kmers_pm095_lda40000_fs0.0025_10.similarity", header = T)
+dt11 = read.table("Chlorocebus_Sabaeus_5kmers_pm095_lda40000_fs0.0025.n500_m100_d0_intra.similarity", header = T)
+dt12=read.table("Chlorocebus_Sabaeus_5kmers_pm095_lda40000_fs0.0025.n500_m100_d0_intra_BIS.similarity", header = T)
+dt1000 = read.table("Chlorocebus_Sabaeus_5kmers_pm095_lda40000_fs0.0025.n1000_m100_d0_intra.similarity", header = T)
+
+dim(dt.res)
+
+svg("img/compare_similarity.svg")
+plot(dt1[,"family"], dt1[,"mean"], type = "b", xlab = "family ID", ylab="mean", main="Similarity comparison with alignment of 500 sequences")
+lines(dt2[,"mean"])
+lines(dt3[,"mean"])
+lines(dt4[,"mean"])
+lines(dt4[,"mean"])
+lines(dt6[,"mean"])
+lines(dt7[,"mean"])
+lines(dt8[,"mean"])
+lines(dt9[,"mean"])
+lines(dt10[,"mean"])
+lines(dt11[,"mean"])
+lines(dt12[,"mean"])
+lines(dt1000[,"mean"], col="red")
+dev.off()
+
+../../script/classification.py Cercopithecus_pogons_XmnI.fst.kmers52 --classification_output_file ../../results/Cercopithecus_Pogonias/Cercopithecus_pogonias.kmers52.pm085_lda75000_fs000089.dat --verbose 9 --pairmate_threshold 0.85 --timing 1 --lda_sample_size 75000 --min_family_size 0.00089 &> ../../results/Cercopithecus_Pogonias/out/out_pm085_lda75000_fs000089.log &
+
+Mes scripts sur Maddy ont disparu OMG
+Relancement du Pogonias 
+../../script/classification.py Cercopithecus_pogonias_XmnI.fst.kmers52 --classification_output_file ../../results/Cercopithecus_Pogonias/Cercopithecus_pogonias_kmer52_pm0.85_lda75000_fs0.01.classification --verbose 9 --pairmate_threshold 0.85 --timing 1 --lda_sample_size 75000 --min_family_size 0.01
+>remodification du script sur Pyhton
+>test sur un petit fichier
+>copier sur Maddy classification.py
+>relancer le c.P. sur maddy mais avec affichage sur le terminal pour superviser.
+
+J’ai ajouté ça mais ça sert à rien :(
+dt.res = cbind(dt1[,"family"], dt1[,"total_nb_seq"], dt1[,"mean"], dt2[,"mean"], dt3[,"mean"],dt4[,"mean"],dt5[,"mean"],dt6[,"mean"],dt7[,"mean"],dt8[,"mean"],dt9[,"mean"],dt10[,"mean"],dt11[,"mean"],dt12[,"mean"], dt1000[,"mean"])
+
+Fichiers de similarité:
+Est-ce que c’est efficace 500??
+cut -f1,2,4 -d " " *similarity  |grep -v NA |grep -v family |sort -k1,1 |awk '$2 > 1000' >q
+========================================================================
+Jeudi 15/02/2018
+========================================================================
+-C.po OK 
+
+-consensus message d'erreur:   
+ERREUR 1:
+File "../../script/build_consensus_by_family.py", line 124, in <module>
+    write_all_sequences(args.seq_file, clusters, all_consensus, args.out_file)
+NameError: name 'write_all_sequences' is not defined
+--------> J'ai modifié par write_all_consensus_sequences
+Lancement d'une séquence consensus pour tester si ça marche au moins, avant de le relancer pour tous.
+ERREUR 2:
+---> Writing sequences ...
+Traceback (most recent call last):
+  File "../../script/build_consensus_by_family.py", line 124, in <module>
+    write_all_consensus_sequences(args.seq_file, clusters, all_consensus, args.out_file)
+NameError: name 'clusters' is not defined
+
+Relance après correction:
+../../script/build_consensus_by_family.py -s Chlorocebus_sabaeus.fa.regions.fst_np_L30.monomers.noN.fst_149.161_182.fst -f ../../results/Chlorocebus_Sabaeus/Chlorocebus_Sabaeus_5kmers_pm095_lda40000_fs0.0025.dat -o ../../results/Chlorocebus_Sabaeus/Chlorocebus_Sabaeus_5kmers_pm095_lda40000_fs0.0025_test2.consensus -m 500 -v 9 &> ../../results/Chlorocebus_Sabaeus/out/outconsensus_test2.log &
+
+Lancement C.p avec pairmate 0.90
+../../script/classification.py Cercopithecus_pogonias_XmnI.fst.kmers52 --classification_output_file ../../results/Cercopithecus_Pogonias/Cercopithecus_pogonias_kmers52.pm090_lda75000_fs000089.dat --verbose 9 --pairmate_threshold 0.90 --timing 1 --lda_sample_size 75000 --min_family_size 0.00089 &> ../../results/Cercopithecus_Pogonias/out/out_classification_pm090_lda75000_fs000089.log &
+
+========================================================================
+Vendredi 16/02/2018
+========================================================================
+-Pogo OK
+
+-Checking presentation + correction presentation
+
+-Script R pour motif et graphes:
+# répertoire: results/
+
+library(dplyr)
+
+#Lecture des données:
+dt.cenpb.MF = read.table("Macaca_Fascicularis/Macaca_Fascicularis_SRA_5kmers_pm095_lda50000_fs0.0034_CENPB.motif", header = T)
+dt.cenpb.CSa = read.table("Chlorocebus_Sabaeus/Chlorocebus_Sabaeus_5kmers_pm095_lda40000_fs0.0025_CENPB.motif", header = T)
+dt.pja.Mf = read.table("Macaca_Fascicularis/Macaca_Fascicularis_SRA_5kmers_pm095_lda50000_fs0.0034_pJalpha.motif", header = T)
+dt.pja.Csa = read.table("Chlorocebus_Sabaeus/Chlorocebus_Sabaeus_5kmers_pm095_lda40000_fs0.0025_pJalpha.motif", header = T)
+
+#Enlever les petites familles:
+dt.cenpb.MF = dt.cenpb.MF %>% filter (dt.cenpb.MF[,"nb_seq"]> 100)
+dt.cenpb.CSa = dt.cenpb.CSa %>% filter (dt.cenpb.CSa [,"nb_seq"] > 100)
+dt.pja.Mf = dt.pja.Mf  %>% filter (dt.pja.Mf[,"nb_seq"]> 100)
+dt.pja.Csa =  dt.pja.Csa  %>% filter (dt.pja.Csa[,"nb_seq"]> 100)
+
+#Combien de familles ont CENP-B
+
+	#trouver les familles qui ont le motif
+fam.cenpb.Csa = dt.cenpb.CSa %>% filter (dt.cenpb.CSa [,"TTCGTTGGAARCGGGA.2.complement"] > 0)
+fam.cenpb.Mf = dt.cenpb.MF %>% filter (dt.cenpb.MF[,"TTCGTTGGAARCGGGA.2.complement"] > 0)
+
+	#compter les familles qui ont le motif
+l.fam.cenpb.Csa = length(fam.cenpb.Csa[,1]) # 2 familles (2*100/36 = 5.555556%)
+l.fam.cenpb.Mf = length(fam.cenpb.Mf[,1]) # 3 familles (100*3/32 =  9.375 %)
+
+#Combien de familles ont pJalpha:
+
+	#trouver les familles qui ont le motif
+fam.pja.Csa = dt.pja.Csa %>% filter (dt.pja.Csa [,"TTCCTTTTYCACCRTAG.2.complement"] > 0)
+fam.pja.Mf = dt.pja.Mf %>% filter(dt.pja.Mf[,"TTCCTTTTYCACCRTAG.2.complement"]>0)
+
+	#compter les familles qui ont le motifl.nb.fam.pja.Csa = length()
+l.fam.pja.Csa = length(fam.pja.Csa[,1]) #33 familles ont pJa
+l.fam.pja.Mf = length(fam.pja.Mf[,1])
+
+#Nombres de séquences utilisées: 
+Mf.seq = sum(dt.cenpb.MF[,"nb_seq"]) #38516
+Csa.seq = sum(dt.cenpb.CSa[,"nb_seq"]) #28446
+
+#Combien de séquences ont CENP-B
+Mf -> 864*0.001157 + 272*0.003676 =  1.99952 séquences (100*2/38516 = 0.005192647)
+Csa -> 864*0.001157 + 272*0.003676 = 1.99952 séquences (100*2/28446 = 0.007030865)
+ 
+#Combien de séquences ont pJa:
+
+	#Seuil: on considère que les familles ont pJa pour >0.5
+fam.sup.pja.Csa = dt.pja.Csa %>% filter (dt.pja.Csa [,"TTCCTTTTYCACCRTAG.2.complement"] > 0.5)
+fam.sup.pja.Mf = dt.pja.Mf %>% filter(dt.pja.Mf[,"TTCCTTTTYCACCRTAG.2.complement"]>0.5)
+mf.seq.pja = sum(fam.pja.Mf[,2] * fam.pja.Mf[,3]) # 11969
+sum(test)
+
+
+# graphe: %pja en fonction de la taille des familles (nb de seq)
+png("Macaca_Fascicularis/img/pjaVStaillefam.png")
+plot( dt.pja.Mf[,2], y=dt.pja.Mf[,3], xlab="family size", ylab="% pJalpha", ylim=c(0,1) )
+dev.off()
+
+png("Chlorocebus_Sabaeus/img/pjaVStaillefam.png")
+plot( dt.pja.Csa [,2], y=dt.pja.Csa [,3], xlab="family size", ylab="% pJalpha", ylim=c(0,1) )
+dev.off()
+
+# Parite similarité
+# Lecture des données:
+dt.sim.mf =  read.table("Macaca_Fascicularis/Macaca_Fascicularis_SRA_5kmers_pm095_lda50000_fs0.0034_1.similarity", header = T)
+dt.sim.csa = read.table("Chlorocebus_Sabaeus/Chlorocebus_Sabaeus_5kmers_pm095_lda40000_fs0.0025_1.similarity", header = T)
+
+#Garder seulement les grandes séquences:
+dt.sim.mf = dt.sim.mf %>% filter (dt.sim.mf[,2]>100)
+dt.sim.csa = dt.sim.csa %>% filter(dt.sim.csa[,2]>100)
+
+#Graphes:
+png("Chlorocebus_Sabaeus/img/similarityVStaillefam.png")
+plot(dt.sim.csa[,2], dt.sim.csa[,4], xlab = "family size", ylab = "% similarity", main = "C. sabaeus", ylim = c(0, 25))
+dev.off()
+
+png("Macaca_Fascicularis/img/similarityVStaillefam.png")
+plot(dt.sim.mf[,2], dt.sim.mf[,4], xlab = "family size", ylab = "% similarity", main = "M. fascicularis", ylim = c(0, 25))
+dev.off()
+
+========================================================================
+==============================Semaine 6=================================
+========================================================================
+
+========================================================================
+Lundi 19/02/2018
+========================================================================
+-Vérification du lancement du week-end:
+	-Pogo: OK
+	-Sab: NON problème
+============> En fait rien n'est OK parce que je me suis trompée de répertoire
+J'ai mis fasta au lieu de kmers52 
+
+Relancement du fascicularis SRA (8612)
+../../script/classification.py Macaca_fascicularis_SRA.fasta.regions_np_L30.monomers.noN.fst_149.161_182.fst.kmers52 --classification_output_file ../../results/Macaca_Fascicularis/Macaca_fascicularis_SRA_kmers52_pm090_fs0.0025.dat --verbose 9 --pairmate_threshold 0.90 --timing 1 --min_family_size 0.0025 &> ../../results/Macaca_Fascicularis/out/out_classification_pm090_fs00025_again.log &
+Relancement du sabeus (8621)
+============> date -r Macaca_fascicularis_SRA_kmers52_pm090_fs0.0025.dat
+Mon Feb 19 13:36:39 CET 2018 OK
+
+Relancement du Chlorocebus sabeus
+../../script/classification.py Chlorocebus_sabaeus.fa.regions.fst_np_L30.monomers.noN.fst_149.161_182.fst.kmers52 --classification_output_file ../../results/Chlorocebus_Sabaeus/Chlorocebus_sabaeus.kmers52_pm090_fs0.0034.dat --verbose 9 --pairmate_threshold 0.90 --timing 1 --min_family_size 0.0034 &> ../../results/Chlorocebus_Sabaeus/out/out_classification_pm090fs00034.log &
+============>date -r Chlorocebus_sabaeus.kmers52_pm090_fs0.0034.dat
+Mon Feb 19 12:14:46 CET 2018
+
+Relancement de classification_weekend.py pour Macaca assembly et solatus:9114
+../../script/classification_weekend.sh &> ../../results/week_end_bis.log &
+
+Lecture du premier article de Laurianne + discussion
+
+========================================================================
+Mardi 20/02/2018
+========================================================================
+Petite aide en Latex: http://marin.jb.free.fr/latex/ ou openclassroom
+
+-Comptage de famille et séquences: 
+>Rscript --vanilla ../../scripts/comptage.R Chlorocebus_sabaeus.kmers52_pm090_fs0.0034.dat > out/out_comptage_kmers52_pm090_fs0.0034.txt
+
+>Rscript --vanilla ../../scripts/comptage.R  Cercopithecus_pogonias_kmers52.pm090_lda75000_fs000089.dat > out/out_comptage_kmers52.pm090_lda75000_fs000089.txt
+
+> Rscript --vanilla ../../scripts/comptage.R Chlorocebus_sabaeus.kmers52_pm090_fs0.0034.dat > out/out_comptage_kmers52_pm090_fs0.0034.txt
+
+###########
+#motifs.sh# =============> ça marche sur MADDY fuzznuc!!!!
+########### =============> c'est censé marcher en local aussi, j'ai installé
+Script qui cherche les 3 motifs pour une espèce
+#Parametres:
+	# 1-Chemin/Fichier fasta à parser
+	# 2-Chemin/Fichier de classification
+	# 3-Chemin/output (radical)
+	# 4-chemin/out/output (radical)
+
+Csa: DONE
+../scripts/motifs.sh seq_AS_fasta/Chlorocebus_sabaeus.fa.regions.fst_np_L30.monomers.noN.fst_149.161_182.fst ../results/Chlorocebus_Sabaeus/Chlorocebus_sabaeus.kmers52_pm090_fs0.0034.dat ../results/Chlorocebus_Sabaeus/Chlorocebus_sabaeus.kmers52_pm090_fs0.0034 ../results/Chlorocebus_Sabaeus/out/out_kmers52_pm090_fs0.0034
+
+Mf: DONE
+../scripts/motifs.sh seq_AS_fasta/Macaca_fascicularis_SRA.fasta.regions_np_L30.monomers.noN.fst_149.161_182.fst ../results/Macaca_Fascicularis/Macaca_fascicularis_SRA_kmers52_pm090_fs0.0025.dat ../results/Macaca_Fascicularis/Macaca_fascicularis_SRA_kmers52_pm090_fs0.0025 ../results/Macaca_Fascicularis/out/out_kmers52_pm090_fs0.0025
+
+-Relancement solatus (copie de la commande week-end) DONE
+
+../script/get_motifs_by_family.py -s seq_AS_fasta/Cercopithecus_pogonias_XmnI.fst -f ../results/Cercopithecus_Pogonias/Cercopithecus_pogonias_kmers52.pm090_lda75000_fs000089.dat  -p TTCGTTGGAARCGGGA:2:complement -o ../results/Cercopithecus_Pogonias/Cercopithecus_pogonias_kmers52.pm090_lda75000_fs000089.CENPB.motif -v 9 &> ../results/Cercopithecus_Pogonias/out/out_cenpb_kmers52.pm090_lda75000_fs000089.log &
+
+-Installation de Fuzznuc
+========================================================================
+Mercredi 21/02/2018
+========================================================================
+-Vérification:
+	-classification solatus
+	-motifs Csa, Mf(SRA), pogo
+				               __
+-Lancement motifs.sh pour sola sur ma machine |OK|
+
+-Lancement similarité: Csa, Mf, 
+
+Comptage de séquences pour solatus:
+Rscript --vanilla ../../scripts/comptage.R Cercopithecus_solatus_kmers52_pm090_lda75000_fs0.00095.dat > out_comptage_kmers52_pm090_lda75000_fs0.00095.txt
+
+Simi pogo  25725
+simi sola  25842
+
+Lancement macaque pour fs=50: 4787 (13:24)
+100 * 50 / 39893 = 0.125% = 0.00125
+
+#########
+#Motif.R#
+#########
+repertory: results/espece
+prend en argument les fichier .motif pour cenpb/pja/pkb/similarity dans l'ordre
+Modification du  script motif.R
+
+Rscript --vanilla ../../scripts/motif.R Macaca_fascicularis_SRA_kmers52_pm090_fs0.0025.CENPB.motif Macaca_fascicularis_SRA_kmers52_pm090_fs0.0025.pJalpha.motif Macaca_fascicularis_SRA_kmers52_pm090_fs0.0025.pKbeta.motif Macaca_fascicularis_SRA_kmers52_pm090_fs0.0025.n500_m100_d0_intra.similarity
+
+Rscript --vanilla ../../scripts/motif.R kmers52_pm090_fs0.0034.CENPB.motif kmers52_pm090_fs0.0034.pJalpha.motif kmers52_pm090_fs0.0034.pKbeta.motif Chlorocebus_sabaeus.kmers52_pm090_fs0.0034.n500_m100_d0_intra.similarity
+
+Rscript --vanilla ../../scripts/motif.R Cercopithecus_pogonias_kmers52.pm090_lda75000_fs000089.CENPB.motif Cercopithecus_pogonias_kmers52.pm090_lda75000_fs000089.pJalpha.motif Cercopithecus_pogonias_kmers52.pm090_lda75000_fs000089.pKbeta.motif Cercopithecus_pogonias_kmers52.pm090_lda75000_fs000089.n500_m100_d0_intra.similarity
+
+Rscript --vanilla ../../scripts/motif.R Cercopithecus_solatus_kmers52_pm090_lda75000_fs0.00095.CENPB.motif Cercopithecus_solatus_kmers52_pm090_lda75000_fs0.00095.pJalpha.motif Cercopithecus_solatus_kmers52_pm090_lda75000_fs0.00095.pKbeta.motif Cercopithecus_solatus_kmers52_pm090_lda75000_fs0.00095.n500_m100_d0_intra.similarity
+
+Débuggage build consensus 
+Lancement pour chaque espèce:
+../../script/build_consensus_by_family_test.py -s Chlorocebus_sabaeus.fa.regions.fst_np_L30.monomers.noN.fst_149.161_182.fst -f ../../results/Chlorocebus_Sabaeus/Chlorocebus_sabaeus.kmers52_pm090_fs0.0034.dat -m 500 -o ../../results/Chlorocebus_Sabaeus/Chlorocebus_sabaeus.kmers52_pm090_fs0.0034.consensus -v 9
+ET
+../../script/build_consensus_by_family_TEST.py -s Cercopithecus_pogonias_XmnI.fst -f ../../results/Cercopithecus_Pogonias/test -m 500 -o ../../results/Cercopithecus_Pogonias/test.consensus -v 9
+
+Csa 13563
+../../script/build_consensus_by_family_TEST.py -s Chlorocebus_sabaeus.fa.regions.fst_np_L30.monomers.noN.fst_149.161_182.fst -f ../../results/Chlorocebus_Sabaeus/Chlorocebus_sabaeus.kmers52_pm090_fs0.0034.dat -m 500 -o ../../results/Chlorocebus_Sabaeus/Chlorocebus_sabaeus.kmers52_pm090_fs0.0034.consensus -v 9 &> ../../results/Chlorocebus_Sabaeus/out/out_consensus.kmers52_pm090_fs0.0034.log &
+
+Mf 14638
+
+Page de garde latex
+
+Lancement du macaque assembly 15840
+========================================================================
+Jeudi 22/02/2018
+========================================================================
+Rédaction début into
+
+Compte moka
+login: kaddah
+mdp: idem maddy
+machine: rddmoka (ou rddmoka.mnhn.fr)
+
+grep -c ">" TEST
+cut -f4 -d " " test |sort |uniq -c
+
+Lancement pour Solatus et Macaque Assembly dans script classification_weekend.sh sur maddy 28840
+
+lancement en séquentiel des consensus pour toutes les familles:29056
+../../script/consensus.sh &> ../../results/out_consensus_pm090.log &
+
+========================================================================
+Vendredi 22/02/2018
+========================================================================
+-rédaction partie 2 intro
+
+MADDY: ces lignes de commandes sont présentes dans classification_weekend.py
+	-solatus pour pm=0.95
+../../script/classification.py Cercopithecus_solatus_XmnI.fst.kmers52  --classification_output_file ../../results/Cercopithecus_Solatus/Cercopithecus_solatus_kmers52_pm095_lda75000_fs0.00095.dat --verbose 9 --pairmate_threshold 0.95 --timing 1 --lda_sample_size 75000 --min_family_size 0.00095 &> ../../results/Cercopithecus_Solatus/out/out_classification_pm095_lda75000_fs0.00095.log
+	-mf assembly pour pm=0.95
+../../script/classification.py Macaca_fascicularis.fa.regions.fst_np_L30.monomers.noN.fst_149.161_182.fst.kmers52 --classification_output_file ../../results/Macaca_Fascicularis/Macaca_fascicularis_kmers52_pm095_lda75000_fs0.00051.dat --verbose 9 --pairmate_threshold 0.95 --timing 1 --lda_sample_size 75000 --min_family_size 0.00051 &> ../../results/Macaca_Fascicularis/out/out_classification_kmers52_pm095_lda75000_fs0.00051.log
+
+LANCEMENT:  8812
+../../script/classification_weekend.sh &> LOGOUT_we.log &
+
+
+MOKA: pm=0.90 lda=100000
+	-solatus
+../../script/classification.py Cercopithecus_solatus_XmnI.fst.kmers52  --classification_output_file ../../results/Cercopithecus_Solatus/Cercopithecus_solatus_kmers52_pm090_lda100000_fs0.00095.dat --verbose 9 --pairmate_threshold 0.90 --timing 1 --lda_sample_size 100000 --min_family_size 0.00095 &> ../../results/Cercopithecus_Solatus/out/out_classification_pm090_lda100000_fs0.00095.log
+----66> reste des commandes voir classi
+
+../../script/classification_we.sh &> ../../results/WE.log &
+32910
+========================================================================
+==============================Semaine 7================================= r-18
+========================================================================
+
+Lundi 26/02/2018
+========================================================================
+- création du github rapport
+
+- relancement MfAssembly lda=75000 pm=0.95 
+==> ça n'avait pas marché sur maddy
+../../script/classification.py Macaca_fascicularis.fa.regions.fst_np_L30.monomers.noN.fst_149.161_182.fst.kmers52 --classification_output_file ../../results/Macaca_fascicularis/Macaca_fascicularis_kmers52_pm095_lda_75000_fs0.00051.dat --verbose 9 --pairmate_threshold 0.95 --timing 1 --lda_sample_size 75000 --min_family_size 0.00051 &> ../../results/Macaca_fascicularis/out/out_classification_kmers52_pm095_lda_75000_fs0.00051.log 
+
+- relancement pour pogonias lda=100000 pm=0.90 sur MOKA
+-----> débuggage script = classification_moka.py
+../../script/classification.py Cercopithecus_pogonias_XmnI.fst.kmers52  --classification_output_file ../../results/Cercopithecus_pogonias/Cercopithecus_kmers52_pm090_lda100000_fs0.00089.dat --verbose 9 --pairmate_threshold 0.90 --timing 1 --lda_sample_size 100000 --min_family_size 0.00089 &> ../../results/Cercopithecus_pogonias/out/out_classification_pm090_lda100000_fs0.00095_BIS.log
+
+	
+	====> relancement du script classification_week-end.py 167222
+
+- diapos de loic
+
+- comparaison avec les familles de Laurianne
+
+Pour séparer en colonnes:
+sed 's/_/ /g' Cercopithecus_pogonias_kmers52.pm090_lda75000_fs000089.dat |grep H
+
+Pour avoir la composition de chaque famille: 
+(Col 1: nb de séq, col 2: classification de L., col 3: num famille)
+sed 's/_/ /g' Cercopithecus_pogonias_kmers52.pm090_lda75000_fs000089.dat | cut -d " " -f3,9 |sort |uniq -c
+
+Pour avoir la classification de Laurianne:
+sed 's/_/ /g' Cercopithecus_pogonias_kmers52.pm090_lda75000_fs000089.dat | cut -d " " -f3,8 |sort |uniq -c
+   5916 A 
+  94049 B 
+   8368 C 
+   4242 E 
+    165 H 
+    162 I 
+
+Pour retrouver les familles H:
+sed 's/_/ /g' Cercopithecus_pogonias_kmers52.pm090_lda75000_fs000089.dat | cut -d " " -f3,10 |sort |uniq -c
+
+========================================================================
+Mardi 27/02/2018
+========================================================================
+-Vérification:
+	-fascicularis assembly lda=75000 & pm=0.95 OK
+	-pogo lda=100000 OK
+
+-Mise à jour du README pour en faire un seul fichier
+
+-Rangementdes scripts et correction, des fichiers résultats, des données, 
+déplacement des données au meme endroit (sur local)
+========================================================================
+Mercredi 28/02/2018
+========================================================================
+
+========================================================================
+Jeudi 01/03/2018
+========================================================================
+
+========================================================================
+Vendredi 02/03/2018
+========================================================================
+
+
+========================================================================
+==============================Semaine 8================================= r-17
+========================================================================
+
