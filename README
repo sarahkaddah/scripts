@@ -820,6 +820,10 @@ Relancement du Chlorocebus sabeus
 ============>date -r Chlorocebus_sabaeus.kmers52_pm090_fs0.0034.dat
 Mon Feb 19 12:14:46 CET 2018
 
+###########################
+#classification_weekend.sh#
+###########################
+Script qui contient les lignes de commandes de classification.py
 Relancement de classification_weekend.py pour Macaca assembly et solatus:9114
 ../../script/classification_weekend.sh &> ../../results/week_end_bis.log &
 
@@ -922,6 +926,10 @@ cut -f4 -d " " test |sort |uniq -c
 
 Lancement pour Solatus et Macaque Assembly dans script classification_weekend.sh sur maddy 28840
 
+
+##############
+#consensus.sh#
+##############
 lancement en séquentiel des consensus pour toutes les familles:29056
 ../../script/consensus.sh &> ../../results/out_consensus_pm090.log &
 
@@ -1000,6 +1008,8 @@ Mardi 27/02/2018
 
 -Rangementdes scripts et correction, des fichiers résultats, des données, 
 déplacement des données au meme endroit (sur local)
+
+-Changement du mot de passe MOKA
 ========================================================================
 Mercredi 28/02/2018
 ========================================================================
